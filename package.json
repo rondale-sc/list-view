@@ -15,5 +15,8 @@
   "bugs": {
     "url": "https://github.com/emberjs/list-view/issues"
   },
-  "homepage": "https://github.com/emberjs/list-view"
+  "homepage": "https://github.com/emberjs/list-view",
+  "devDependencies": {
+    "testem": "^0.6.17"
+  }
 }
