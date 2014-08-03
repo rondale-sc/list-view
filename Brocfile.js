@@ -5,6 +5,8 @@ var jshint = require('broccoli-jshint');
 var merge = require('broccoli-merge-trees');
 var moveFile = require('broccoli-file-mover');
 var wrap = require('broccoli-wrap');
+var uglify = require('broccoli-uglify-js');
+var es3SafeRecast = require('broccoli-es3-safe-recast');
 var pickFiles = require('broccoli-static-compiler');
 
 function testTree(libTree, packageName){
@@ -64,11 +66,19 @@ globalBuild = wrap(globalBuild, {
 testFiles = concat(testFiles, {
   inputFiles: ['test_helper.js', '**/*.js'],
   separator: '\n',
-  // wrapInEval: true,
-  // wrapInFunction: true,
+  wrapInEval: true,
+  wrapInFunction: true,
   outputFile: '/tests.js'
 });
 
 var distTree = merge([globalBuild, testFiles, testRunner, bower]);
+
+if (env === 'production') {
+  var uglified = moveFile(uglify(globalBuild, {mangle: true}),{
+    srcFile: '/list-view.js',
+    destFile: '/list-view.min.js'
+  });
+  distTree =  merge([uglified, distTree]);
+}
 
 module.exports = distTree;
